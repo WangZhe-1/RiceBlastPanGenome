@@ -1,0 +1,19 @@
+new_tpye_secreted_protein=read.table(new_tpye_secreted_protein_file_name)
+classic_secreted_protein=read.table(classic_secreted_protein_file_name)
+all_secreted_protein=rbind(new_tpye_secreted_protein,classic_secreted_protein)
+dfs=function(cate){
+  file_name=paste(
+    "../../Pan_genome_data/pan_categories_protein/",
+    as.character(cate),
+    ".txt",
+    sep = ''
+    )
+  cate_df=read.table(file_name)
+  num=length(intersect(cate_df$V1,all_secreted_protein$V1))
+  per=num/nrow(cate_df)
+  return(c(num,per))
+}
+cate_vec=c("core","soft_core","soft_specific","specific","pan_new","no_present","middle")
+dsd=sapply(cate_vec,dfs)
+dsd_df=as.data.frame(dsd)
+WriteXLS::WriteXLS(dsd_df,"../../Pan_genome_data/sre_cate.xlsx")
